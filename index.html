@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="genTable(8, 8, 'gameArea', 'row', 'cell', '1px solid black', '1px solid black')">Generate New Area</button>
+    <button onclick="genTable(9, 3, 'setArea', 'setRow', 'setCell', '1px solid black', '0px')">Generate New Set</button>
+    <button onclick="randomBlock()">Generate RandomBlock</button>
+    <button onclick="clearSet()">Clear Set</button>
+
+    <div id="gameArea"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
