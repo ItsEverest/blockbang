@@ -1,85 +1,98 @@
-const blocks = [/*Kwadrat*/"111111111",/*2x3*/ "111111000", /*S*/"110011000", /*niskie-T*/"111010000", "111"];
-const colors = ["blue", "yellow", "orange", "red", "cyan", "purple", "green"]
+let blocks = [/*Square 3x3*/"0000001110011100111000000", "0000001110001000000000000"];
+let colors = ["yellow", "red", "blue", "green", "cyan", "purple", "orange"];
 
-function genTable(tableWidth, tableHeight, tableName, trName, tdName, tableBorder, tdBorder){
-    let createTable = document.createElement("table");
-    let gameArea = document.getElementById("gameArea");
+let gameArea = document.getElementById("gameArea");
+let tableCounter = 0;
 
-    createTable.style.border = tableBorder;
-    createTable.style.width = (tableWidth*100)+"px";
-    createTable.style.height = (tableHeight*100)+"px";
-    createTable.id = tableName;
-    gameArea.appendChild(createTable);
+function tableGen(tableWidth, tableHeight, tableWidth_px, tableHeight_px, tableId, trId, tdId, borderStyle){
+    let gameTable = document.createElement("table");
 
-    let cellCounter = 0; 
-    let rowCounter = 0;
+    gameTable.id = String(tableId) + tableCounter;
 
-    for(let x=0; x<tableHeight; x++){
- 
-        let createTr = document.createElement("tr");
+    gameTable.style.border = borderStyle;
+    gameTable.style.width = String(tableWidth_px) + "px";
+    gameTable.style.height = String(tableHeight_px) + "px";
+    gameArea.appendChild(gameTable);
 
-        createTr.style.border = "1px solid black"
-        createTr.style.height = "100px";
-        createTr.id = String(trName) + rowCounter;
-        createTable.appendChild(createTr);
+    let trCounter = 0;
+    let tdCounterX = 0;
+    let tdCounterY = 0;
 
-        for(let y=0; y<tableWidth; y++){
-            let createTd = document.createElement("td")
-            createTd.style.border = tdBorder;
-            createTd.style.width = "100px";
-            createTd.id = String(tdName) + cellCounter;
-            createTr.appendChild(createTd);
-            cellCounter++;
+    for(let y = 0; y < tableHeight; y++){
+        let gameTr = document.createElement("tr");
+
+        gameTr.id = String(trId) + trCounter;
+        gameTable.appendChild(gameTr);
+        trCounter++;
+
+        for(let x = 0; x < tableWidth; x++){
+            let gameTd = document.createElement("td");
+
+            gameTd.id = String(tdId) + "_" + tableCounter + "_" + tdCounterX + "_" + tdCounterY;
+            gameTd.style.border = "1px solid black";
+            gameTr.appendChild(gameTd);
+            tdCounterX++;
+
+            if((tdCounterX+1) % tableWidth-1 == 0){
+                tdCounterX = 0;
+                tdCounterY++;
+            }
 
         }
     }
+    tableCounter++;
+}
 
-    console.log("Generated table with parameters (tableWidth:" + tableWidth +", tableHeight:" + tableHeight + ", tableName:" + tableName + ", trName:" + trName + ", tdName:" + tdName + ", tableBorder: " + tableBorder + ", tdBorder:" + tdBorder + ")");
+function setGen(){
+    // Select correct tableSet area
+    for(let x = 0; x<(tableCounter-1); x++){
+        console.log("REPETITION " + x);
+        let tableSet = document.getElementById(("tableSet"+(x+1)));
+        let tdCounterX = 0;
+        let tdCounterY = 0;
+
+        // Get random block and color for current iteration
+        let tempColor = colors[randomColor()];
+        let tempBlock = blocks[randomBlock()];
+
+        // Repeat 25 times for each pixel
+        for(let y = 0; y<25; y++){
+
+            let tdSet = document.getElementById(("tdSet" + "_" + (x+1) + "_" + tdCounterX + "_" + tdCounterY));
+            console.log(("tdSet" + "_" + (x+1) + "_" + tdCounterX + "_" + tdCounterY));
+
+            // If it is meant to be filled, color it with current color
+            if(tempBlock[y] == 1){
+                tdSet.style.backgroundColor = tempColor;
+            } else{
+                tdSet.style.backgroundColor = "white";
+            }
+
+            // Counting collumns and rows for ID referencing
+            tdCounterX++;
+
+            if((tdCounterX) % 5 == 0){
+                tdCounterX = 0;
+                tdCounterY++;
+            }
+
+
+        }
+    }
 }
 
 function randomBlock(){
-    // Powtórzenie 3x dla każdego kształtu
-    for(let x = 0; x<9; x+=3){
-        // Losowy klocek na podstawie długości zbioru
-        let blockNum = Math.floor(Math.random()*(blocks.length));
-        console.log("Random block tableindex is: " + blockNum);
-        // Losowy kolor
-        let currentColor = randomColor();
-        // Rysowanie kształtu
-        for(let y=0; y<9; y++){
-            // Iteracja przez binarnie zapisany kształt
-            let temp = blocks[blockNum][y];
-            // Jeśli zamalowany
-            if (temp === "1") {
-                let tempCell;
-
-                if (y < 3) {
-                    // Pierwszy rząd
-                    tempCell = document.getElementById("setCell" + (y+x));
-                    console.log("setCell" + y+x);
-                } else if (y < 6) {
-                    // Drugi rząd
-                    tempCell = document.getElementById("setCell" + (y + 6 + x));
-                    console.log("setCell" + (y+6+x));
-                } else {
-                    // Trzeci rząd
-                    tempCell = document.getElementById("setCell" + (y + 12 + x));
-                    console.log("setCell" + (y+12+x));
-                }
-
-                tempCell.style.backgroundColor = currentColor;
-            }
-        }
-    }
+    let temp = getRandomInt(blocks.length);
+    console.log("blocks[] = " + temp);
+    return temp;
 }
 
 function randomColor(){
-    return colors[Math.floor(Math.random()*(colors.length))];
+    let temp = getRandomInt(colors.length);
+    console.log("colors[] = " + temp);
+    return temp;
 }
 
-function clearSet(){
-    for(let y=0; y<(9*3); y++){
-        document.getElementById("setCell" + (y)).style.backgroundColor = "white";
-    }
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
 }
-
