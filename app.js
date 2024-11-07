@@ -1,5 +1,7 @@
 let gameGrid = [[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0]];
+let tempAssignedColors = [];
 let heldBlockValue = 0;
+let tableSetHolder;
 let blocks = [/*Square 3x3*/"0000001110011100111000000", /*T*/ "0000001110001000000000000"];
 let colors = ["yellow", "red", "blue", "green", "cyan", "purple", "orange"];
 
@@ -34,6 +36,7 @@ function tableGen(tableWidth, tableHeight, tableWidth_px, tableHeight_px, tableI
 
             gameTd.id = String(tdId) + "_" + tableCounter + "_" + tdCounterX + "_" + tdCounterY;
             gameTd.style.border = "1px solid black";
+            gameTd.style.backgroundColor = "white";
 
             gameTr.appendChild(gameTd);
             tdCounterX++;
@@ -69,6 +72,8 @@ function setGen(){
             // If it is meant to be filled, color it with current color
             if(tempBlock[y] == 1){
                 tdSet.style.backgroundColor = tempColor;
+                // Storing colors till placement
+                tempAssignedColors[x] = tempColor;
                 tdSet.addEventListener("click", () => selectElement(tempBlock, x));
             } else{
                 tdSet.style.backgroundColor = "white";
@@ -84,14 +89,15 @@ function setGen(){
             }
         }
     }
+    placeElement();
 }
 
 function selectElement(tempBlock, x){
     if(heldBlockValue==0){
         heldBlockValue = tempBlock;
-        const table = document.getElementById('tableSet' + (x+1));
-        table.style.position = 'absolute';
-        table.style.pointerEvents = 'none';
+        tableSetHolder = document.getElementById('tableSet' + (x+1));
+        tableSetHolder.style.position = 'absolute';
+        tableSetHolder.style.pointerEvents = 'none';
 
         document.addEventListener('mousemove', function(ev){
             document.getElementById('tableSet' + (x+1)).style.transform = 'translateY('+(ev.clientY-115)+'px)';
@@ -100,8 +106,52 @@ function selectElement(tempBlock, x){
     }
 }
 
-function placeElement(pos){
-    alert(pos);
+function placeElement(xColorsArray){
+    const container = document.getElementById('tableGame0');
+    container.addEventListener('click', function(event){
+        const clickedElement = event.target;
+
+
+    // Area emptiness check
+        console.log(heldBlockValue);
+
+        let tdGame;
+        let counter = 0;
+        let isValid = true;
+        for(let x=-2;x<3;x++){
+            for(let y=-2;y<3;y++){
+                tdGame = document.getElementById(String((clickedElement.id).substring(0, 8) + "_" + (parseInt(clickedElement.id[9])+y) + "_" + (parseInt(clickedElement.id[11])+x)));
+                if(heldBlockValue[counter] == 1){
+                    if(tdGame && isValid){
+                            if(tdGame.style.backgroundColor != "white"){
+                                console.log("Not empty space")
+                                isValid = false;
+                            }
+                        } else{
+                            console.log("Failed attempt or out of bounds...")
+                            isValid = false;
+                        }
+                } else {
+                    console.log("Space not needed")
+                }
+                counter++;
+            }
+        }
+
+        //If check is sucessfull, fill out the space
+        if(isValid){
+            counter = 0;
+            for(let x=-2;x<3;x++){
+                for(let y=-2;y<3;y++){
+                    if(heldBlockValue[counter] == 1){
+                        tdGame = document.getElementById(String((clickedElement.id).substring(0, 8) + "_" + (parseInt(clickedElement.id[9])+y) + "_" + (parseInt(clickedElement.id[11])+x)));
+                        tdGame.style.backgroundColor = tempAssignedColors[tableSetHolder.id[8]-1];
+                    }
+                    counter++;
+                }
+            }
+        }
+    })
 }
 
 
@@ -121,3 +171,4 @@ function randomColor(){
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
+
