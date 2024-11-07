@@ -1,12 +1,12 @@
 let gameGrid = [[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0]];
-let elements = [];
+let heldBlockValue = 0;
 let blocks = [/*Square 3x3*/"0000001110011100111000000", /*T*/ "0000001110001000000000000"];
 let colors = ["yellow", "red", "blue", "green", "cyan", "purple", "orange"];
 
 let gameArea = document.getElementById("gameArea");
 let tableCounter = 0;
 
-function tableGen(tableWidth, tableHeight, tableWidth_px, tableHeight_px, tableId, trId, tdId, borderStyle){
+function tableGen(tableWidth, tableHeight, tableWidth_px, tableHeight_px, tableId, trId, tdId, borderStyle, isMainArea){
     let gameTable = document.createElement("table");
 
     gameTable.id = String(tableId) + tableCounter;
@@ -15,6 +15,7 @@ function tableGen(tableWidth, tableHeight, tableWidth_px, tableHeight_px, tableI
     gameTable.style.width = String(tableWidth_px) + "px";
     gameTable.style.height = String(tableHeight_px) + "px";
     gameTable.style.transition = "transform 0.1s ease";
+
     gameArea.appendChild(gameTable);
 
     let trCounter = 0;
@@ -33,6 +34,7 @@ function tableGen(tableWidth, tableHeight, tableWidth_px, tableHeight_px, tableI
 
             gameTd.id = String(tdId) + "_" + tableCounter + "_" + tdCounterX + "_" + tdCounterY;
             gameTd.style.border = "1px solid black";
+
             gameTr.appendChild(gameTd);
             tdCounterX++;
 
@@ -80,23 +82,27 @@ function setGen(){
                 tdCounterX = 0;
                 tdCounterY++;
             }
-
-
         }
     }
 }
 
 function selectElement(tempBlock, x){
-    const table = document.getElementById('tableSet' + (x+1));
-    table.style.position = 'absolute';
+    if(heldBlockValue==0){
+        heldBlockValue = tempBlock;
+        const table = document.getElementById('tableSet' + (x+1));
+        table.style.position = 'absolute';
+        table.style.pointerEvents = 'none';
 
-    document.addEventListener('mousemove', function(ev){
-        document.getElementById('tableSet' + (x+1)).style.transform = 'translateY('+(ev.clientY-115)+'px)';
-        document.getElementById('tableSet' + (x+1)).style.transform += 'translateX('+(ev.clientX-105)+'px)';            
-    },false);
+        document.addEventListener('mousemove', function(ev){
+            document.getElementById('tableSet' + (x+1)).style.transform = 'translateY('+(ev.clientY-115)+'px)';
+            document.getElementById('tableSet' + (x+1)).style.transform += 'translateX('+(ev.clientX-105)+'px)';           
+        },false);
+    }
 }
 
-
+function placeElement(pos){
+    alert(pos);
+}
 
 
 
