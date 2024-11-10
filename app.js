@@ -2,6 +2,7 @@ let gameGrid = [[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,
 let heldBlockValue = 0;
 let scoreValue = 0;
 let tableSetHolder;
+let usedBlocks = 0;
 let blocks = [
     // Square block - 3x3 in the center of 5x5 grid (only one orientation)
     "0000001110011100111000000",
@@ -66,6 +67,13 @@ let colors = ["yellow", "red", "blue", "green", "cyan", "purple", "orange"];
 let gameArea = document.getElementById("gameArea");
 let tableCounter = 0;
 let setTableCounter = 0;
+
+tableGen(8, 8, 800, 800, 'tableGame', 'trGame', 'tdGame', '1px solid black', '1px solid black');
+
+tableGen(5, 5, 200, 200, 'tableSet', 'trSet', 'tdSet', '0px solid black', '0px solid black');
+tableGen(5, 5, 200, 200, 'tableSet', 'trSet', 'tdSet', '0px solid black', '0px solid black');
+tableGen(5, 5, 200, 200, 'tableSet', 'trSet', 'tdSet', '0px solid black', '0px solid black');
+setGen();
 
 function tableGen(tableWidth, tableHeight, tableWidth_px, tableHeight_px, tableId, trId, tdId, borderStyle, td_borderStyle){
     let gameTable = document.createElement("table");
@@ -199,7 +207,7 @@ function lineCheck(){
 }
 
 function lineClear(x, y){
-    if(x){
+    if(x != false){
         //Column
         for(let z = 0; z<8; z++){
             let tempTd = document.getElementById("tdGame_0_" + x + "_" + z);
@@ -279,6 +287,14 @@ function placeElement(){
             heldBlockValue = 0;
             tableSetHolder = null;
             lineCheck();
+            usedBlocks +=1;
+            if(usedBlocks>2){
+                usedBlocks = 0;
+                tableGen(5, 5, 200, 200, 'tableSet', 'trSet', 'tdSet', '0px solid black', '0px solid black');
+                tableGen(5, 5, 200, 200, 'tableSet', 'trSet', 'tdSet', '0px solid black', '0px solid black');
+                tableGen(5, 5, 200, 200, 'tableSet', 'trSet', 'tdSet', '0px solid black', '0px solid black');
+                setGen();
+            }
         } else {
             console.log("Block cannot be placed here.");
         }
