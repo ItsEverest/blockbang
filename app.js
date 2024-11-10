@@ -189,7 +189,7 @@ function lineCheck(){
 
         if (gameGrid[y].every(value => value === 1)) {
             console.log('Column ' + y + ' is all 1s');
-            lineClear(y, false);
+            lineClear(y, true);
         }
         let isRowFull = true;
         for(let x = 0; x<8; x++){
@@ -201,13 +201,13 @@ function lineCheck(){
         }
         if(isRowFull){
             console.log('Row ' + y + ' is all 1s');
-            lineClear(false, y)
+            lineClear(y, false);
         }
     }
 }
 
-function lineClear(x, y){
-    if(x != false){
+function lineClear(x, isColumn){
+    if(isColumn){
         //Column
         for(let z = 0; z<8; z++){
             let tempTd = document.getElementById("tdGame_0_" + x + "_" + z);
@@ -218,9 +218,9 @@ function lineClear(x, y){
     } else{
         //Row
         for(let z = 0; z<8; z++){
-            let tempTd = document.getElementById("tdGame_0_" + z + "_" + y);
+            let tempTd = document.getElementById("tdGame_0_" + z + "_" + x);
             tempTd.style.backgroundColor = "white";
-            gameGrid[z][y] = 0;
+            gameGrid[z][x] = 0;
         }
         updateScore(16);
     }
